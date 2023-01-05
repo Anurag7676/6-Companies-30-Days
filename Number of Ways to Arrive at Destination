@@ -1,0 +1,55 @@
+class Solution {
+public:
+    typedef long long ll;
+    int countPaths(int n, vector<vector<int>>& roads) {
+        
+    vector<pair<ll,ll>>adj[n];
+     ll m= roads.size();    
+        for(ll i=0;i<m;i++)
+        {
+            ll u= roads[i][0];
+            ll v= roads[i][1];
+            ll time= roads[i][2];
+            adj[u].push_back({v,time});
+            adj[v].push_back({u,time});
+        }
+        vector<long long >ways(n ,0);
+        ways[0]=1;
+        set<pair<ll,ll>>s;
+        s.insert({0,0});
+        vector<long long >dist(n,LONG_MAX);
+        dist[0]=0;
+        ll min_dis=LONG_MAX;
+        ll mod= (1000000000+7);
+        while(!s.empty())
+        {
+            auto front= *(s.begin());
+            auto dis= front.first;
+            auto node= front.second;
+            s.erase(s.begin());            
+            for(auto neigh: adj[node])
+            {
+                
+                ll v= neigh.first;
+                ll wt= neigh.second;
+                if(dis+wt<dist[v])
+                {
+                    dist[v]= dis+wt;
+                    ways[v]= ways[node];
+                    s.insert({dist[v],v});
+                }
+                else if(dis+wt==dist[v])
+                {
+                    ways[v]= (ways[v]+ways[node])%mod;
+                }
+                
+                                
+            }
+            
+            
+        }
+        
+        return ways[n-1]; 
+        
+    }
+};
